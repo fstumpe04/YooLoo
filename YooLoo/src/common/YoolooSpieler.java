@@ -74,7 +74,7 @@ public class YoolooSpieler implements Serializable {
                     }
                 }
                 aktuelleSortierung = userSortierung;*/
-               aktuelleSortierung = sorting(2);
+               aktuelleSortierung = sorting(3);
             }
             for(YoolooKarte aus : getAktuelleSortierung()){
                 System.out.println(aus);
@@ -120,16 +120,13 @@ public class YoolooSpieler implements Serializable {
                     break;
                 case 3:
                     for (int i = 0; i < neueSortierung.length; i++) {
-                        int lastHigh = 3;
-                        int neuerIndex = -1;
-                        if(i <= (neueSortierung.length - lastHigh)){
-                            neuerIndex = (int) (Math.random() * (neueSortierung.length - lastHigh));
-                            while (neueSortierung[neuerIndex] != null) {
-                                neuerIndex = (int) (Math.random() * (neueSortierung.length - lastHigh));
+                        int neuerIndex = (int) (Math.random() * neueSortierung.length);
+                        if(i < 7){
+                            while (neueSortierung[neuerIndex] != null && neuerIndex >= 7) {
+                                neuerIndex = (int) (Math.random() * neueSortierung.length);
                             }
                         } else {
-                            neuerIndex = (int) (Math.random() * neueSortierung.length);
-                            while (neueSortierung[neuerIndex] != null) {
+                            while (neueSortierung[neuerIndex] != null && neuerIndex <= 7) {
                                 neuerIndex = (int) (Math.random() * neueSortierung.length);
                             }
                         }
