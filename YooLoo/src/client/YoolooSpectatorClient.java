@@ -19,7 +19,7 @@ import messages.ClientMessage;
 import messages.ClientMessage.ClientMessageType;
 import messages.ServerMessage;
 
-public class YoolooClient {
+public class YoolooSpectatorClient {
 
 	private String serverHostname = "localhost";
 	private int serverPort = 44137;
@@ -34,11 +34,11 @@ public class YoolooClient {
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
 
-	public YoolooClient() {
+	public YoolooSpectatorClient() {
 		super();
 	}
 
-	public YoolooClient(String serverHostname, int serverPort) {
+	public YoolooSpectatorClient(String serverHostname, int serverPort) {
 		super();
 		this.serverPort = serverPort;
 		clientState = ClientState.CLIENTSTATE_NULL;
@@ -55,21 +55,17 @@ public class YoolooClient {
 			verbindeZumServer();
 
 			while (clientState != ClientState.CLIENTSTATE_DISCONNECTED && ois != null && oos != null) {
-                            
-				// 1. Schritt Kommado empfangen                              
+				// 1. Schritt Kommado empfangen
 				ServerMessage kommandoMessage = empfangeKommando();
 				System.out.println("[id-x]ClientStatus: " + clientState + "] " + kommandoMessage.toString());
-                                
-				// 2. Schritt ClientState ggfs aktualisieren (fuer alle neuen Kommandos)                             
+				// 2. Schritt ClientState ggfs aktualisieren (fuer alle neuen Kommandos)
 				ClientState newClientState = kommandoMessage.getNextClientState();
 				if (newClientState != null) {
 					clientState = newClientState;
 				}
-                                
 				// 3. Schritt Kommandospezifisch reagieren
 				switch (kommandoMessage.getServerMessageType()) {
 				case SERVERMESSAGE_SENDLOGIN:
-                                    
 					// Server fordert Useridentifikation an
 					// Falls User local noch nicht bekannt wird er bestimmt
 					if (newLogin == null || clientState == ClientState.CLIENTSTATE_LOGIN) {
