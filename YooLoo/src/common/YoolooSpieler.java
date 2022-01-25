@@ -17,7 +17,7 @@ public class YoolooSpieler implements Serializable {
 	private int clientHandlerId = -1;
 	private int punkte;
 	private YoolooKarte[] aktuelleSortierung;
-
+//      Kommentar von Florian
 	public YoolooSpieler(String name, int maxKartenWert) {
 		this.name = name;
 		this.punkte = 0;
