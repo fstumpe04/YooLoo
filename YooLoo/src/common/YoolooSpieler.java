@@ -37,6 +37,20 @@ public class YoolooSpieler implements Serializable {
 			// System.out.println(i+ ". neuerIndex: "+neuerIndex);
 		}
 		aktuelleSortierung = neueSortierung;
+                /*      Spieler Legt Reihenfolge fest       *////////////////////////////////////////////
+                /*Scanner sc = new Scanner(System.in);
+                YoolooKarte[] userSortierung = new YoolooKarte[this.aktuelleSortierung.length];
+                for(int i =  0; i < userSortierung.length; i++){
+                    //userSortierung[null][i] = (int)i+1;
+                    System.out.println("Position für Karte " + aktuelleSortierung[i]);
+                    int neuePos = -1;
+                    do{
+                        neuePos = sc.nextInt();
+                        System.out.println("debug Pos: " + neuePos);
+                    }while (neuePos <= 0 || neuePos > 10);
+                    userSortierung[neuePos] = aktuelleSortierung[i];//aktuelleSortierung[i];
+                }
+                aktuelleSortierung = userSortierung;*/
 	}
 
 	public int erhaeltPunkte(int neuePunkte) {
