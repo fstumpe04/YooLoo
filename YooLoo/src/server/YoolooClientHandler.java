@@ -128,7 +128,7 @@ public class YoolooClientHandler extends Thread {
 				// todo cic
 				
             sendeKommando(ServerMessageType.SERVERMESSAGE_CHANGE_STATE, ClientState.CLIENTSTATE_DISCONNECTED,  null);
-//					sendeKommando(ServerMessageType.SERVERMESSAGE_RESULT_SET, ClientState.CLIENTSTATE_DISCONNECTED,	null);
+                                //sendeKommando(ServerMessageType.SERVERMESSAGE_RESULT_SET, ClientState.CLIENTSTATE_DISCONNECTED,	null);
 					oos.writeObject(session.getErgebnis());
 					this.state = ServerState.ServerState_DISCONNECTED;
 					break;
