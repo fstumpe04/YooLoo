@@ -9,6 +9,7 @@ package messages;
 import java.io.Serializable;
 
 import client.YoolooClient.ClientState;
+import client.YoolooSpectatorClient.SpectatorClientState;
 
 /**
  * Serverseitig durch ClientHandler generierte Nachrichten zur Ubermittlung an
@@ -21,6 +22,7 @@ public class ServerMessage implements Serializable {
 
 	private ServerMessageType serverMessageType;
 	private ClientState nextClientState;
+        private SpectatorClientState nextSpectatorClientState;
 	private ServerMessageResult serverMessageResult; // noch nicht genutzt
 	private int paramInt; // fuer (sequenzielle) Durchfuehrung von wiederholten Operationen
 
@@ -84,6 +86,10 @@ public class ServerMessage implements Serializable {
 	public ClientState getNextClientState() {
 		return nextClientState;
 	}
+        
+        public SpectatorClientState getNextSpectatorClientState(){
+            return nextSpectatorClientState;
+        }
 
 	public void setNextClientState(ClientState nextClientState) {
 		this.nextClientState = nextClientState;
