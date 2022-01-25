@@ -10,7 +10,7 @@ public class Starter {
 	public static void main(String[] args) {
 
 //		Initialisieren des Spiels
-
+//hh
 		YoolooKartenspiel yooloo = new YoolooKartenspiel();
 		yooloo.listeSpielstand();
 
