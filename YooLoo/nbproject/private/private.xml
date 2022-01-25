@@ -3,20 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/common/YoolooSpieler.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/.git/config</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/server/YoolooServer.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/messages/ClientMessage.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/allgemein/StarterServer.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/server/YoolooSession.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/common/YoolooKartenspiel.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/common/LoginMessage.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/allgemein/Starter.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/client/YoolooClient.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/messages/ServerMessage.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/server/YoolooClientHandler.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/common/YoolooKarte.java</file>
-            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/src/allgemein/StarterClient.java</file>
+            <file>file:/home/21ITM7/stumpef/NetBeansProjects/YooLoo/YooLoo/src/allgemein/Starter.java</file>
         </group>
     </open-files>
 </project-private>

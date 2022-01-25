@@ -10,7 +10,7 @@ public class Starter {
 	public static void main(String[] args) {
 
 //		Initialisieren des Spiels
-                
+                // https://stackoverflow.com/questions/69791140/incorrect-credentials-when-trying-to-clone-repository-to-netbeans-with-https
                 System.out.println("Hello World!");
 		YoolooKartenspiel yooloo = new YoolooKartenspiel();
 		yooloo.listeSpielstand();
