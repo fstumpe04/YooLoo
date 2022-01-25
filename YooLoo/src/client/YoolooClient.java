@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 import common.LoginMessage;
 import common.YoolooKartenspiel;
@@ -29,7 +30,8 @@ public class YoolooClient {
 
 	private ClientState clientState = ClientState.CLIENTSTATE_NULL;
 
-	private String spielerName = "Name" + (System.currentTimeMillis() + "").substring(6);
+	private String spielerName = setSpielername();
+        
 	private LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
@@ -43,12 +45,33 @@ public class YoolooClient {
 		this.serverPort = serverPort;
 		clientState = ClientState.CLIENTSTATE_NULL;
 	}
+        
+        public String setSpielername(){
+                String name="";
+                
+                
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Bitte Namen eingeben.");
+                    if(scanner.hasNextLine()){
+                        name = scanner.nextLine();
+                        scanner.close();
+                        
+                        
+
+                    }
+                
+                return name;
+                
+        }
 
 	/**
 	 * Client arbeitet statusorientiert als Kommandoempfuenger in einer Schleife.
 	 * Diese terminiert wenn das Spiel oder die Verbindung beendet wird.
 	 */
 	public void startClient() {
+                
+            
+                
 
 		try {
 			clientState = ClientState.CLIENTSTATE_CONNECT;
@@ -71,6 +94,7 @@ public class YoolooClient {
 					if (newLogin == null || clientState == ClientState.CLIENTSTATE_LOGIN) {
 						// TODO Klasse LoginMessage erweiteren um Interaktives ermitteln des
 						// Spielernames, GameModes, ...)
+                                                
 						newLogin = eingabeSpielerDatenFuerLogin(); //Dummy aufruf
 						newLogin = new LoginMessage(spielerName);
 					}
