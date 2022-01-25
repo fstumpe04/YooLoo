@@ -6,6 +6,7 @@ package common;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import common.YoolooKartenspiel.Kartenfarbe;
 
@@ -27,7 +28,16 @@ public class YoolooSpieler implements Serializable {
 
 	// Sortierung wird zufuellig ermittelt
 	public void sortierungFestlegen() {
-		YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
+            Scanner sc = new Scanner(System.in);
+            // Karten mischen?
+            char sort;
+            do{
+                System.out.println("+++ Karten Zufaellig mischen? (y/n) +++");
+                sort = sc.next().charAt(0);
+            } while(!(sort == 'y' || sort == 'n'));
+            
+            if(sort == 'y'){
+		/*YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
 		for (int i = 0; i < neueSortierung.length; i++) {
 			int neuerIndex = (int) (Math.random() * neueSortierung.length);
 			while (neueSortierung[neuerIndex] != null) {
@@ -36,8 +46,101 @@ public class YoolooSpieler implements Serializable {
 			neueSortierung[neuerIndex] = aktuelleSortierung[i];
 			// System.out.println(i+ ". neuerIndex: "+neuerIndex);
 		}
-		aktuelleSortierung = neueSortierung;
+		aktuelleSortierung = neueSortierung;*/
+                aktuelleSortierung = sorting(1);
+            }
+            else if (sort == 'n'){
+                /*      Spieler Legt Reihenfolge fest       */
+               /* YoolooKarte[] userSortierung = new YoolooKarte[this.aktuelleSortierung.length];
+                for(int i =  0; i < userSortierung.length; i++){
+                    System.out.println("\n\nPosition für Karte\n ->\t" + aktuelleSortierung[i]);
+                    int neuePos = -1;
+                    do{
+                        // Output of current sorting
+                        int numCards = 0;
+                        System.out.println("------- Sortierung -------\nPosition\tKarte");
+                        for(YoolooKarte currentCard : userSortierung){
+                            System.out.println(numCards + "\t\t" + currentCard);
+                            numCards++;
+                        }
+                        neuePos = sc.nextInt();
+                        
+                    }while (neuePos < 0 || neuePos > 10);
+                    if(userSortierung[neuePos] == null)
+                        userSortierung[neuePos] = aktuelleSortierung[i];//aktuelleSortierung[i];
+                    else{
+                        System.err.println("Position " + neuePos + " ist bereits belegt");
+                        i--;
+                    }
+                }
+                aktuelleSortierung = userSortierung;*/
+               aktuelleSortierung = sorting(2);
+            }
+            for(YoolooKarte aus : getAktuelleSortierung()){
+                System.out.println(aus);
+            }
 	}
+        
+        public YoolooKarte[] sorting(int choise){
+            YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
+            Scanner sc = new Scanner(System.in);
+            
+            switch(choise){
+                case 1:
+                    for (int i = 0; i < neueSortierung.length; i++) {
+                        int neuerIndex = (int) (Math.random() * neueSortierung.length);
+                        while (neueSortierung[neuerIndex] != null) {
+                            neuerIndex = (int) (Math.random() * neueSortierung.length);
+                        }
+                        neueSortierung[neuerIndex] = aktuelleSortierung[i];
+                    }
+                    break;
+                case 2:   
+                    for(int i =  0; i < neueSortierung.length; i++){
+                        System.out.println("\n\nPosition für Karte\n ->\t" + aktuelleSortierung[i]);
+                        int neuePos = -1;
+                        do{
+                            // Output of current sorting
+                            int numCards = 0;
+                            System.out.println("------- Sortierung -------\nPosition\tKarte");
+                            for(YoolooKarte currentCard : neueSortierung){
+                                System.out.println(numCards + "\t\t" + currentCard);
+                                numCards++;
+                            }
+                            neuePos = sc.nextInt();
+
+                        }while (neuePos < 0 || neuePos > 10);
+                        if(neueSortierung[neuePos] == null)
+                            neueSortierung[neuePos] = aktuelleSortierung[i];//aktuelleSortierung[i];
+                        else{
+                            System.err.println("Position " + neuePos + " ist bereits belegt");
+                            i--;
+                        }
+                    }
+                    break;
+                case 3:
+                    for (int i = 0; i < neueSortierung.length; i++) {
+                        int lastHigh = 3;
+                        int neuerIndex = -1;
+                        if(i <= (neueSortierung.length - lastHigh)){
+                            neuerIndex = (int) (Math.random() * (neueSortierung.length - lastHigh));
+                            while (neueSortierung[neuerIndex] != null) {
+                                neuerIndex = (int) (Math.random() * (neueSortierung.length - lastHigh));
+                            }
+                        } else {
+                            neuerIndex = (int) (Math.random() * neueSortierung.length);
+                            while (neueSortierung[neuerIndex] != null) {
+                                neuerIndex = (int) (Math.random() * neueSortierung.length);
+                            }
+                        }
+                        neueSortierung[neuerIndex] = aktuelleSortierung[i];
+                    }
+                    break;
+                    
+            
+            }
+            return neueSortierung;
+        }
 
 	public int erhaeltPunkte(int neuePunkte) {
 		System.out.print(name + " hat " + punkte + " P - erhaelt " + neuePunkte + " P - neue Summe: ");
