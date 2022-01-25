@@ -27,7 +27,7 @@ public class YoolooSpectatorClient {
 	private ObjectInputStream ois = null;
 	private ObjectOutputStream oos = null;
 
-	private ClientState clientState = ClientState.CLIENTSTATE_NULL;
+	private SpectatorClientState spectatorClientState = SpectatorClientState.CLIENTSTATE_NULL;
 
 	private String spielerName = "Name" + (System.currentTimeMillis() + "").substring(6);
 	private LoginMessage newLogin = null;
@@ -41,34 +41,34 @@ public class YoolooSpectatorClient {
 	public YoolooSpectatorClient(String serverHostname, int serverPort) {
 		super();
 		this.serverPort = serverPort;
-		clientState = ClientState.CLIENTSTATE_NULL;
+		spectatorClientState = SpectatorClientState.CLIENTSTATE_NULL;
 	}
 
 	/**
 	 * Client arbeitet statusorientiert als Kommandoempfuenger in einer Schleife.
 	 * Diese terminiert wenn das Spiel oder die Verbindung beendet wird.
 	 */
-	public void startClient() {
+	public void startSpectatorClient() {
 
 		try {
-			clientState = ClientState.CLIENTSTATE_CONNECT;
+			spectatorClientState = SpectatorClientState.CLIENTSTATE_CONNECT;
 			verbindeZumServer();
 
-			while (clientState != ClientState.CLIENTSTATE_DISCONNECTED && ois != null && oos != null) {
+			while (spectatorClientState != SpectatorClientState.CLIENTSTATE_DISCONNECTED && ois != null && oos != null) {
 				// 1. Schritt Kommado empfangen
 				ServerMessage kommandoMessage = empfangeKommando();
-				System.out.println("[id-x]ClientStatus: " + clientState + "] " + kommandoMessage.toString());
+				System.out.println("[id-x]ClientStatus: " + spectatorClientState + "] " + kommandoMessage.toString());
 				// 2. Schritt ClientState ggfs aktualisieren (fuer alle neuen Kommandos)
-				ClientState newClientState = kommandoMessage.getNextClientState();
+				SpectatorClientState newClientState = kommandoMessage.getNextSpectatorClientState();
 				if (newClientState != null) {
-					clientState = newClientState;
+					spectatorClientState = newClientState;
 				}
 				// 3. Schritt Kommandospezifisch reagieren
 				switch (kommandoMessage.getServerMessageType()) {
 				case SERVERMESSAGE_SENDLOGIN:
 					// Server fordert Useridentifikation an
 					// Falls User local noch nicht bekannt wird er bestimmt
-					if (newLogin == null || clientState == ClientState.CLIENTSTATE_LOGIN) {
+					if (newLogin == null || spectatorClientState == SpectatorClientState.CLIENTSTATE_LOGIN) {
 						// TODO Klasse LoginMessage erweiteren um Interaktives ermitteln des
 						// Spielernames, GameModes, ...)
 						newLogin = eingabeSpielerDatenFuerLogin(); //Dummy aufruf
@@ -76,7 +76,7 @@ public class YoolooSpectatorClient {
 					}
 					// Client meldet den Spieler an den Server
 					oos.writeObject(newLogin);
-					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
+					System.out.println("[id-x]ClientStatus: " + spectatorClientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
 					empfangeSpieler();
 					// ausgabeKartenSet();
@@ -91,11 +91,8 @@ public class YoolooSpectatorClient {
 							"Kartensortierung ist erfolgt!");
 					oos.writeObject(message);
 					break;
-				case SERVERMESSAGE_SEND_CARD:
-					spieleStich(kommandoMessage.getParamInt());
-					break;
 				case SERVERMESSAGE_RESULT_SET:
-					System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+					System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + spectatorClientState
 							+ "] : Ergebnis ausgeben ");
 					String ergebnis = empfangeErgebnis();
 					System.out.println(ergebnis.toString());
@@ -139,26 +136,6 @@ public class YoolooSpectatorClient {
 		// Kommunikationskanuele einrichten
 		ois = new ObjectInputStream(serverSocket.getInputStream());
 		oos = new ObjectOutputStream(serverSocket.getOutputStream());
-	}
-
-	private void spieleStich(int stichNummer) throws IOException {
-		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
-				+ "] : Spiele Karte " + stichNummer);
-		spieleKarteAus(stichNummer);
-		YoolooStich iStich = empfangeStich();
-		spielVerlauf[stichNummer] = iStich;
-		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
-				+ "] : Empfange Stich " + iStich);
-		if (iStich.getSpielerNummer() == meinSpieler.getClientHandlerId()) {
-			System.out.print(
-					"[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState + "] : Gewonnen - ");
-			meinSpieler.erhaeltPunkte(iStich.getStichNummer() + 1);
-		}
-
-	}
-
-	private void spieleKarteAus(int i) throws IOException {
-		oos.writeObject(meinSpieler.getAktuelleSortierung()[i]);
 	}
 
 	// Methoden fuer Datenempfang vom Server / ClientHandler
@@ -212,16 +189,16 @@ public class YoolooSpectatorClient {
 
 	public void ausgabeKartenSet() {
 		// Ausgabe Kartenset
-		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + spectatorClientState
 				+ "] : Uebermittelte Kartensortierung beim Login ");
 		for (int i = 0; i < meinSpieler.getAktuelleSortierung().length; i++) {
-			System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+			System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + spectatorClientState
 					+ "] : Karte " + (i + 1) + ":" + meinSpieler.getAktuelleSortierung()[i]);
 		}
 
 	}
 
-	public enum ClientState {
+	public enum SpectatorClientState {
 		CLIENTSTATE_NULL, // Status nicht definiert
 		CLIENTSTATE_CONNECT, // Verbindung zum Server wird aufgebaut
 		CLIENTSTATE_LOGIN, // Anmeldung am Client Informationen des Users sammeln
