@@ -78,7 +78,7 @@ public class YoolooClient {
 					oos.writeObject(newLogin);
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
-					empfangeSpieler();
+                                        empfangeSpieler();
 					// ausgabeKartenSet();
 					break;
 				case SERVERMESSAGE_SORT_CARD_SET:

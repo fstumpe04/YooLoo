@@ -70,7 +70,7 @@ public class YoolooClientHandler extends Thread {
 		try {
 			state = ServerState.ServerState_CONNECT; // Verbindung zum Client aufbauen
 			verbindeZumClient();
-
+                        
 			state = ServerState.ServerState_REGISTER; // Abfragen der Spieler LoginMessage
 			sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN, ClientState.CLIENTSTATE_LOGIN, null);
 
@@ -200,8 +200,8 @@ public class YoolooClientHandler extends Thread {
 	}
 
 	private void registriereSpielerInSession(YoolooSpieler meinSpieler) {
-		System.out
-				.println("[ClientHandler" + clientHandlerId + "] registriereSpielerInSession " + meinSpieler.getName());
+		System.out.
+                                println("[ClientHandler" + clientHandlerId + "] registriereSpielerInSession " + meinSpieler.getName());
 		session.getAktuellesSpiel().spielerRegistrieren(meinSpieler);
 	}
 
