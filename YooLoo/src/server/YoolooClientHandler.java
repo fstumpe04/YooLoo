@@ -97,31 +97,25 @@ public class YoolooClientHandler extends Thread {
 					if (antwortObject instanceof LoginMessage) {
 						LoginMessage newLogin = (LoginMessage) antwortObject;
 						// TODO GameMode des Logins wird noch nicht ausgewertet
-						meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert);
-                                                Boolean nameDoubled = checkIfAlreadyConnected(meinSpieler.getName());
                                                 
-                                                while(nameDoubled){                                                    
-                                                    state = ServerState.ServerState_REGISTER;
-                                                    oos.writeObject("Bitte erneut versuchen (mit anderen Namen)!");  
+                                                String playerName = newLogin.getSpielerName();
+                                                Boolean nameDoubled = checkIfAlreadyConnected(playerName);
+                                                if(nameDoubled){
+                                                    System.out.println("Name: "+playerName+" bereits vergeben");
                                                     sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN, ClientState.CLIENTSTATE_LOGIN, null);
-                                                    Scanner scanner = new Scanner(System.in);
-                                                    if(scanner.hasNextLine()){
-                                                        String name = scanner.nextLine();
-                                                        nameDoubled = checkIfAlreadyConnected(name);
-                                                    }
-                                                    
-                                                }
-                                                
-                                                if(!nameDoubled){
+                                                }else{
+                                                    meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert);
                                                     meinSpieler.setClientHandlerId(clientHandlerId);
                                                     registriereSpielerInSession(meinSpieler);
                                                     oos.writeObject(meinSpieler);
-                                                    sendeKommando(ServerMessageType.SERVERMESSAGE_SORT_CARD_SET, ClientState.CLIENTSTATE_SORT_CARDS,
-                                                                    null);
+                                                    sendeKommando(ServerMessageType.SERVERMESSAGE_SORT_CARD_SET, ClientState.CLIENTSTATE_SORT_CARDS,null);
                                                     this.state = ServerState.ServerState_PLAY_SESSION;
-                                                    break;
+                                                    
                                                 }
+                                            break;
+    
 					}
+                                        
 				case ServerState_PLAY_SESSION:
 					switch (session.getGamemode()) {
 					case GAMEMODE_SINGLE_GAME:
