@@ -38,9 +38,10 @@ public class YoolooSpieler implements Serializable {
                 System.out.println("+   1.  Random     +");
                 System.out.println("+   2.  select     +");
                 System.out.println("+   3.  last5high  +");
+                System.out.println("+   4.  all_10     +");
                 System.out.println("++++++++++++++++++++");
                 sortAlgo = sc.nextInt();//().charAt(0);
-            } while(sortAlgo < 0 && sortAlgo >= 3);
+            } while(sortAlgo < 0 && sortAlgo >= 4);
             
             switch (sortAlgo) {
                 case 1:
@@ -51,6 +52,9 @@ public class YoolooSpieler implements Serializable {
                     break;
                 case 3:
                     aktuelleSortierung = sorting(3);
+                    break;
+                case 4:
+                    aktuelleSortierung = sorting(4);
                     break;
                 default:
                     System.out.println("Diese Option steht nicht zur Verfügung...");
@@ -124,12 +128,13 @@ public class YoolooSpieler implements Serializable {
                     break;
                 case 4:
                     for (int i = 0; i < neueSortierung.length; i++){
-                        if(i < 3){  //
+                       /* if(i < 3){  //
                         }
                         else if(i < 6){
                         }
                         else{
-                        }
+                        }*/
+                       neueSortierung[i] = aktuelleSortierung[9];
                     }
                     
             
