@@ -6,6 +6,8 @@
 
 package server;
 
+
+import allgemein.StarterServer;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,12 +21,18 @@ import common.YoolooKarte;
 import common.YoolooKartenspiel;
 import common.YoolooSpieler;
 import common.YoolooStich;
+import java.util.ArrayList;
+import java.util.Scanner;
 import messages.ClientMessage;
 import messages.ServerMessage;
 import messages.ServerMessage.ServerMessageResult;
 import messages.ServerMessage.ServerMessageType;
 
+
+
 public class YoolooClientHandler extends Thread {
+    
+        public ArrayList<String> onlinePlayer = new ArrayList<String>();
 
 	private final static int delay = 100;
 
@@ -40,6 +48,7 @@ public class YoolooClientHandler extends Thread {
 	private YoolooSession session;
 	private YoolooSpieler meinSpieler = null;
 	private int clientHandlerId;
+        
 
 	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket) {
 		this.myServer = yoolooServer;
@@ -89,13 +98,29 @@ public class YoolooClientHandler extends Thread {
 						LoginMessage newLogin = (LoginMessage) antwortObject;
 						// TODO GameMode des Logins wird noch nicht ausgewertet
 						meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert);
-						meinSpieler.setClientHandlerId(clientHandlerId);
-						registriereSpielerInSession(meinSpieler);
-						oos.writeObject(meinSpieler);
-						sendeKommando(ServerMessageType.SERVERMESSAGE_SORT_CARD_SET, ClientState.CLIENTSTATE_SORT_CARDS,
-								null);
-						this.state = ServerState.ServerState_PLAY_SESSION;
-						break;
+                                                Boolean nameDoubled = checkIfAlreadyConnected(meinSpieler.getName());
+                                                
+                                                while(nameDoubled){                                                    
+                                                    state = ServerState.ServerState_REGISTER;
+                                                    oos.writeObject("Bitte erneut versuchen (mit anderen Namen)!");  
+                                                    sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN, ClientState.CLIENTSTATE_LOGIN, null);
+                                                    Scanner scanner = new Scanner(System.in);
+                                                    if(scanner.hasNextLine()){
+                                                        String name = scanner.nextLine();
+                                                        nameDoubled = checkIfAlreadyConnected(name);
+                                                    }
+                                                    
+                                                }
+                                                
+                                                if(!nameDoubled){
+                                                    meinSpieler.setClientHandlerId(clientHandlerId);
+                                                    registriereSpielerInSession(meinSpieler);
+                                                    oos.writeObject(meinSpieler);
+                                                    sendeKommando(ServerMessageType.SERVERMESSAGE_SORT_CARD_SET, ClientState.CLIENTSTATE_SORT_CARDS,
+                                                                    null);
+                                                    this.state = ServerState.ServerState_PLAY_SESSION;
+                                                    break;
+                                                }
 					}
 				case ServerState_PLAY_SESSION:
 					switch (session.getGamemode()) {
@@ -187,10 +212,22 @@ public class YoolooClientHandler extends Thread {
 		}
 		return null;
 	}
+        private Boolean checkIfAlreadyConnected(String name){
+            Boolean connected = null;
+            for(int i = 0;i < StarterServer.onlinePlayer.length;i++){
+                if(StarterServer.onlinePlayer[i].equals("")){
+                    StarterServer.onlinePlayer[i]=name;
+                    return connected = false;
+                }else if(StarterServer.onlinePlayer[i].equals(name)){
+                    return connected = true;
+                }
+            }
+            return connected;
+
+        }
 
 	private void registriereSpielerInSession(YoolooSpieler meinSpieler) {
-		System.out
-				.println("[ClientHandler" + clientHandlerId + "] registriereSpielerInSession " + meinSpieler.getName());
+		System.out.println("[ClientHandler" + clientHandlerId + "] registriereSpielerInSession " + meinSpieler.getName());                
 		session.getAktuellesSpiel().spielerRegistrieren(meinSpieler);
 	}
 
