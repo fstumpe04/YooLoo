@@ -28,53 +28,34 @@ public class YoolooSpieler implements Serializable {
 
 	// Sortierung wird zufuellig ermittelt
 	public void sortierungFestlegen() {
+            //for(YoolooKarte card : aktuelleSortierung)
+            //    System.out.println(card);
             Scanner sc = new Scanner(System.in);
             // Karten mischen?
-            char sort;
+            int sortAlgo;
             do{
-                System.out.println("+++ Karten Zufaellig mischen? (y/n) +++");
-                sort = sc.next().charAt(0);
-            } while(!(sort == 'y' || sort == 'n'));
+                System.out.println("++++++++++++++++++++");
+                System.out.println("+   1.  Random     +");
+                System.out.println("+   2.  select     +");
+                System.out.println("+   3.  last5high  +");
+                System.out.println("++++++++++++++++++++");
+                sortAlgo = sc.nextInt();//().charAt(0);
+            } while(sortAlgo < 0 && sortAlgo >= 3);
             
-            if(sort == 'y'){
-		/*YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
-		for (int i = 0; i < neueSortierung.length; i++) {
-			int neuerIndex = (int) (Math.random() * neueSortierung.length);
-			while (neueSortierung[neuerIndex] != null) {
-				neuerIndex = (int) (Math.random() * neueSortierung.length);
-			}
-			neueSortierung[neuerIndex] = aktuelleSortierung[i];
-			// System.out.println(i+ ". neuerIndex: "+neuerIndex);
-		}
-		aktuelleSortierung = neueSortierung;*/
-                aktuelleSortierung = sorting(1);
-            }
-            else if (sort == 'n'){
-                /*      Spieler Legt Reihenfolge fest       */
-               /* YoolooKarte[] userSortierung = new YoolooKarte[this.aktuelleSortierung.length];
-                for(int i =  0; i < userSortierung.length; i++){
-                    System.out.println("\n\nPosition für Karte\n ->\t" + aktuelleSortierung[i]);
-                    int neuePos = -1;
-                    do{
-                        // Output of current sorting
-                        int numCards = 0;
-                        System.out.println("------- Sortierung -------\nPosition\tKarte");
-                        for(YoolooKarte currentCard : userSortierung){
-                            System.out.println(numCards + "\t\t" + currentCard);
-                            numCards++;
-                        }
-                        neuePos = sc.nextInt();
-                        
-                    }while (neuePos < 0 || neuePos > 10);
-                    if(userSortierung[neuePos] == null)
-                        userSortierung[neuePos] = aktuelleSortierung[i];//aktuelleSortierung[i];
-                    else{
-                        System.err.println("Position " + neuePos + " ist bereits belegt");
-                        i--;
-                    }
-                }
-                aktuelleSortierung = userSortierung;*/
-               aktuelleSortierung = sorting(3);
+            switch (sortAlgo) {
+                case 1:
+                    aktuelleSortierung = sorting(1);
+                    break;
+                case 2:
+                    aktuelleSortierung = sorting(2);
+                    break;
+                case 3:
+                    aktuelleSortierung = sorting(3);
+                    break;
+                default:
+                    System.out.println("Diese Option steht nicht zur Verfügung...");
+                    sortierungFestlegen();
+                    break;
             }
             for(YoolooKarte aus : getAktuelleSortierung()){
                 System.out.println(aus);
@@ -119,20 +100,37 @@ public class YoolooSpieler implements Serializable {
                     }
                     break;
                 case 3:
-                    for (int i = 0; i < neueSortierung.length; i++) {
-                        int neuerIndex = (int) (Math.random() * neueSortierung.length);
-                        if(i < 7){
-                            while (neueSortierung[neuerIndex] != null && neuerIndex >= 7) {
-                                neuerIndex = (int) (Math.random() * neueSortierung.length);
+                    for (int i = 0; i < neueSortierung.length; i++) {       // neuerIndex = Pos in neueSortierung // i = Kartenwert
+                        System.out.println("Karte zum einfügen: " + aktuelleSortierung[i]);
+                        int neuerIndex = (int) (Math.random() * 5);
+                        
+                        // Random sort of first 5 cards (1-5)
+                        if(i < 5){
+                            while(neueSortierung[neuerIndex] != null){
+                                neuerIndex = (int) (Math.random() * 5);
                             }
-                        } else {
-                            while (neueSortierung[neuerIndex] != null && neuerIndex <= 7) {
-                                neuerIndex = (int) (Math.random() * neueSortierung.length);
+                        } 
+                        // Random sort of last 5 cards (6-10)
+                        else 
+                        {
+                            neuerIndex += 5;
+                            while(neueSortierung[neuerIndex] != null){
+                                neuerIndex = ((int) (Math.random() * 5));
+                                neuerIndex += 5;
                             }
                         }
                         neueSortierung[neuerIndex] = aktuelleSortierung[i];
                     }
                     break;
+                case 4:
+                    for (int i = 0; i < neueSortierung.length; i++){
+                        if(i < 3){  //
+                        }
+                        else if(i < 6){
+                        }
+                        else{
+                        }
+                    }
                     
             
             }

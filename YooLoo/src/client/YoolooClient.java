@@ -78,7 +78,7 @@ public class YoolooClient {
 					oos.writeObject(newLogin);
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
-					empfangeSpieler();
+                                        empfangeSpieler();
 					// ausgabeKartenSet();
 					break;
 				case SERVERMESSAGE_SORT_CARD_SET:
@@ -128,7 +128,7 @@ public class YoolooClient {
 			try {
 				serverSocket = new Socket(serverHostname, serverPort);
 			} catch (ConnectException e) {
-				System.out.println("Server antwortet nicht - ggfs. neu starten");
+				System.out.println("Server antwortet nicht - ggfs. neu starten" +  serverHostname);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e1) {
