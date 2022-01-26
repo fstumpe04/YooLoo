@@ -29,7 +29,7 @@ public class YoolooClient {
 
 	private ClientState clientState = ClientState.CLIENTSTATE_NULL;
 
-	private String spielerName = "Name";// + (System.currentTimeMillis() + "").substring(6);
+	private String spielerName = "Name" + (System.currentTimeMillis() + "").substring(6);
 	private LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
@@ -128,7 +128,7 @@ public class YoolooClient {
 			try {
 				serverSocket = new Socket(serverHostname, serverPort);
 			} catch (ConnectException e) {
-				System.out.println("Server antwortet nicht - ggfs. neu starten" +  serverHostname);
+				System.out.println("Server antwortet nicht - ggfs. neu starten");
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e1) {
