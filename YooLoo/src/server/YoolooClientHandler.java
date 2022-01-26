@@ -6,6 +6,7 @@
 
 package server;
 
+import allgemein.StarterServer; // Mike
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,6 +20,8 @@ import common.YoolooKarte;
 import common.YoolooKartenspiel;
 import common.YoolooSpieler;
 import common.YoolooStich;
+import java.util.ArrayList; // Mike
+import java.util.Scanner;   // Mike
 import messages.ClientMessage;
 import messages.ServerMessage;
 import messages.ServerMessage.ServerMessageResult;
@@ -26,6 +29,8 @@ import messages.ServerMessage.ServerMessageType;
 
 public class YoolooClientHandler extends Thread {
 
+    public ArrayList<String> onlinePlayer = new ArrayList<String>();    // Mike
+    
 	private final static int delay = 100;
 
 	private YoolooServer myServer;
@@ -70,7 +75,6 @@ public class YoolooClientHandler extends Thread {
 		try {
 			state = ServerState.ServerState_CONNECT; // Verbindung zum Client aufbauen
 			verbindeZumClient();
-
 			state = ServerState.ServerState_REGISTER; // Abfragen der Spieler LoginMessage
 			sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN, ClientState.CLIENTSTATE_LOGIN, null);
 
@@ -189,8 +193,7 @@ public class YoolooClientHandler extends Thread {
 	}
 
 	private void registriereSpielerInSession(YoolooSpieler meinSpieler) {
-		System.out
-				.println("[ClientHandler" + clientHandlerId + "] registriereSpielerInSession " + meinSpieler.getName());
+		System.out.println("[ClientHandler" + clientHandlerId + "] registriereSpielerInSession " + meinSpieler.getName());
 		session.getAktuellesSpiel().spielerRegistrieren(meinSpieler);
 	}
 
