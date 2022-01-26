@@ -29,7 +29,7 @@ public class YoolooClient {
 
 	private ClientState clientState = ClientState.CLIENTSTATE_NULL;
 
-	private String spielerName = "Name" + (System.currentTimeMillis() + "").substring(6);
+	private String spielerName = "Name";// + (System.currentTimeMillis() + "").substring(6);
 	private LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
