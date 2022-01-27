@@ -105,6 +105,7 @@ public class YoolooClient {
                                         
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
+
                                         kommandoMessage = empfangeKommando();
                                         while(kommandoMessage.getServerMessageResult()==messages.ServerMessage.ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK){
                                         
@@ -138,7 +139,9 @@ public class YoolooClient {
 //                                                empfangeSpieler();
 //                                        }
                                         
-					// ausgabeKartenSet();
+
+
+					
 					break;
 				case SERVERMESSAGE_SORT_CARD_SET:
 					// sortieren Karten

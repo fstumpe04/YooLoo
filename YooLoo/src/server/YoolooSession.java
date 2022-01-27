@@ -16,6 +16,7 @@ public class YoolooSession {
 	private YoolooKarte[][] spielplan;
 	private YoolooKartenspiel aktuellesSpiel;
 	private YoolooStich[] ausgewerteteStiche;
+        public YoolooLogger logger;
 
 	public YoolooSession(int anzahlSpielerInRunde) {
 		super();
