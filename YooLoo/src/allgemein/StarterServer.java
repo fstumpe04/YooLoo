@@ -7,9 +7,11 @@ package allgemein;
 import server.YoolooServer;
 import server.YoolooServer.GameMode;
 
+import java.io.IOException;
+
 public class StarterServer {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		int listeningPort = 44137;
 		int spieleranzahl = 2; // min 1, max Anzahl definierte Farben in Enum YoolooKartenSpiel.KartenFarbe)
 		YoolooServer server = new YoolooServer(listeningPort, spieleranzahl, GameMode.GAMEMODE_SINGLE_GAME);

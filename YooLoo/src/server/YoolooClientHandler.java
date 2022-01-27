@@ -6,23 +6,19 @@
 
 package server;
 
+import client.YoolooClient.ClientState;
+import common.*;
+import messages.ClientMessage;
+import messages.ServerMessage;
+import messages.ServerMessage.ServerMessageResult;
+import messages.ServerMessage.ServerMessageType;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
-
-import client.YoolooClient.ClientState;
-import common.LoginMessage;
-import common.YoolooKarte;
-import common.YoolooKartenspiel;
-import common.YoolooSpieler;
-import common.YoolooStich;
-import messages.ClientMessage;
-import messages.ServerMessage;
-import messages.ServerMessage.ServerMessageResult;
-import messages.ServerMessage.ServerMessageType;
 
 public class YoolooClientHandler extends Thread {
 
@@ -136,7 +132,7 @@ public class YoolooClientHandler extends Thread {
 				case ServerState_DISCONNECT:
 				// todo cic
 				
-            sendeKommando(ServerMessageType.SERVERMESSAGE_CHANGE_STATE, ClientState.CLIENTSTATE_DISCONNECTED,  null);
+            		sendeKommando(ServerMessageType.SERVERMESSAGE_CHANGE_STATE, ClientState.CLIENTSTATE_DISCONNECTED,  null);
                                 //sendeKommando(ServerMessageType.SERVERMESSAGE_RESULT_SET, ClientState.CLIENTSTATE_DISCONNECTED,	null);
 					oos.writeObject(session.getErgebnis());
 					this.state = ServerState.ServerState_DISCONNECTED;

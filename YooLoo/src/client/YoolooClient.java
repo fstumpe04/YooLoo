@@ -4,24 +4,20 @@
 
 package client;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ConnectException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import common.LoginMessage;
 import common.YoolooKartenspiel;
 import common.YoolooSpieler;
 import common.YoolooStich;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Scanner;
 import messages.ClientMessage;
 import messages.ClientMessage.ClientMessageType;
 import messages.ServerMessage;
+
+import java.io.*;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class YoolooClient {
 
@@ -39,10 +35,7 @@ public class YoolooClient {
 	private LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
-        
-        
-        private PrintWriter out = null;
-        private BufferedReader in = null; 
+
         
         private boolean spectator;
         private Scanner sc = new Scanner(System.in);
@@ -149,29 +142,28 @@ public class YoolooClient {
 	private void verbindeZumServer() throws UnknownHostException, IOException {
 		while (serverSocket == null) {
 			try {
-				serverSocket = new Socket(serverHostname, serverPort);
-                                out = new PrintWriter(serverSocket.getOutputStream());
-                                in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-                                
-                                
-                                BufferedReader stdIn =
-                                    new BufferedReader(new InputStreamReader(System.in));
+				serverSocket = new Socket(InetAddress.getLocalHost().getHostName(), serverPort);
+                                oos = new ObjectOutputStream(serverSocket.getOutputStream());
+                                ois = new ObjectInputStream(serverSocket.getInputStream());
+
+								BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+
                                 String fromServer;
                                 String fromClient;
                                 
-                                while ((fromServer = in.readLine()) != null) {
-                                System.out.println("Server: " + fromServer);
-                                if (fromServer.equals("Bye."))
-                                    break;
+                                while ((fromServer = (String)ois.readObject()) != null) {
+                                	System.out.println("Server: " + fromServer);
+									if (fromServer.equals("Bye."))
+										break;
 
-                                fromClient = stdIn.readLine();
+                                	fromClient = consoleReader.readLine();
                                     if (fromClient != null) {
-                                        System.out.println("Client: " + fromClient);
-                                        out.println(fromClient);
+                                        oos.writeObject(fromClient);
+										System.out.println("Client: " + fromClient);
                                     }
                                 }
                                 
-                            } catch (ConnectException e) {
+                            } catch (ConnectException | ClassNotFoundException e) {
 				System.out.println("Server antwortet nicht - ggfs. neu starten");
 				try {
 					Thread.sleep(1000);
