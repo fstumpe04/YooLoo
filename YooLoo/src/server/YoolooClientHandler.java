@@ -40,12 +40,14 @@ public class YoolooClientHandler extends Thread {
 	private YoolooSession session;
 	private YoolooSpieler meinSpieler = null;
 	private int clientHandlerId;
+        public YoolooLogger logger;
 
 	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket) {
 		this.myServer = yoolooServer;
 		myServer.toString();
 		this.clientSocket = clientSocket;
 		this.state = ServerState.ServerState_NULL;
+                logger = new YoolooLogger();
 	}
 
 	/**
@@ -71,6 +73,8 @@ public class YoolooClientHandler extends Thread {
 			state = ServerState.ServerState_CONNECT; // Verbindung zum Client aufbauen
 			verbindeZumClient();
                         
+                        logger.writeMessage("Verbindung zum Client aufgebaut", 2 );
+                        
 			state = ServerState.ServerState_REGISTER; // Abfragen der Spieler LoginMessage
 			sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN, ClientState.CLIENTSTATE_LOGIN, null);
 
@@ -81,12 +85,14 @@ public class YoolooClientHandler extends Thread {
 				if (antwortObject instanceof ClientMessage) {
 					ClientMessage message = (ClientMessage) antwortObject;
 					System.out.println("[ClientHandler" + clientHandlerId + "] Nachricht Vom Client: " + message);
-				}
+				logger.writeMessage("Spieler empfangen", 2 );
+                                }
 				switch (state) {
 				case ServerState_REGISTER:
 					// Neuer YoolooSpieler in Runde registrieren
 					if (antwortObject instanceof LoginMessage) {
 						LoginMessage newLogin = (LoginMessage) antwortObject;
+                                                logger.writeMessage("Neuer Spieler wird registriert", 2 );
 						// TODO GameMode des Logins wird noch nicht ausgewertet
 						meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert);
 						meinSpieler.setClientHandlerId(clientHandlerId);
@@ -104,8 +110,10 @@ public class YoolooClientHandler extends Thread {
 						for (int stichNummer = 0; stichNummer < YoolooKartenspiel.maxKartenWert; stichNummer++) {
 							sendeKommando(ServerMessageType.SERVERMESSAGE_SEND_CARD,
 									ClientState.CLIENTSTATE_PLAY_SINGLE_GAME, null, stichNummer);
+                                                        logger.writeMessage("Karten werden abgefragt", 2 );
 							// Neue YoolooKarte in Session ausspielen und Stich abfragen
 							YoolooKarte neueKarte = (YoolooKarte) empfangeVomClient();
+                                                        logger.writeMessage("Karte wird ausgespielt und Stich wird abgefragt", 2 );
                                                         // Änderung Florian: Vergleicht ob der aktuelle Spielplan die soeben übergeben Karte bereits endhält
                                                         YoolooKarte[][] aktuellerSpielplan = session.getSpielplan();                                                        
                                                         for (int i = 0; i < aktuellerSpielplan.length; i++) {
@@ -116,24 +124,31 @@ public class YoolooClientHandler extends Thread {
                                                                                 continue;
                                                                         }
                                                                 }
+                                                            logger.writeMessage("Abfrage ob die Karte bereits enthalten ist", 2 );
                                                         }                                                            
 							System.out.println("[ClientHandler" + clientHandlerId + "] Karte empfangen:" + neueKarte);
 							YoolooStich currentstich = spieleKarte(stichNummer, neueKarte);
+                                                        logger.writeMessage("[ClientHandler" + clientHandlerId + "] Karte empfangen:" + neueKarte, 2 );
 							// Punkte fuer gespielten Stich ermitteln
 							if (currentstich.getSpielerNummer() == clientHandlerId) {
 								meinSpieler.erhaeltPunkte(stichNummer + 1);
+                                                                logger.writeMessage("Punkte für Stich werden ermittelt", 2 );
 							}
 							System.out.println("[ClientHandler" + clientHandlerId + "] Stich " + stichNummer
 									+ " wird gesendet: " + currentstich.toString());
+                                                                        logger.writeMessage("[ClientHandler" + clientHandlerId + "] Stich " + stichNummer + " wird gesendet: " + currentstich.toString(), 2 );
 							// Stich an Client uebermitteln
 							oos.writeObject(currentstich);
+                                                        logger.writeMessage("Stich wird an Client übermittelt", 2 );
 						}
 						this.state = ServerState.ServerState_DISCONNECT;
 						break;
 					default:
 						System.out.println("[ClientHandler" + clientHandlerId + "] GameMode nicht implementiert");
 						this.state = ServerState.ServerState_DISCONNECT;
+                                                logger.writeMessage("[ClientHandler" + clientHandlerId + "] GameMode nicht implementiert", 2);
 						break;
+                                                
 					}
 				case ServerState_DISCONNECT:
 				// todo cic
@@ -145,6 +160,7 @@ public class YoolooClientHandler extends Thread {
 					break;
 				default:
 					System.out.println("Undefinierter Serverstatus - tue mal nichts!");
+                                        logger.writeMessage("Undefinierter Serverstatus - tue mal nichts!", 3 );
 				}
 			}
 		} catch (EOFException e) {
@@ -155,7 +171,9 @@ public class YoolooClientHandler extends Thread {
 			e.printStackTrace();
 		} finally {
 			System.out.println("[ClientHandler" + clientHandlerId + "] Verbindung zu " + socketAddress + " beendet");
-		}
+                        logger.writeMessage("ClientHandler" + clientHandlerId + "] Verbindung zu " + socketAddress + " beendet", 3 );
+                }
+                
 
 	}
 
@@ -165,6 +183,9 @@ public class YoolooClientHandler extends Thread {
 				paramInt);
 		System.out.println("[ClientHandler" + clientHandlerId + "] Sende Kommando: " + kommandoMessage.toString());
 		oos.writeObject(kommandoMessage);
+                logger.writeMessage("[ClientHandler" + clientHandlerId + "] Sende Kommando: " + kommandoMessage.toString(), 2 );
+
+                
 	}
 
 	private void sendeKommando(ServerMessageType serverMessageType, ClientState clientState,
@@ -179,9 +200,12 @@ public class YoolooClientHandler extends Thread {
 		ois = new ObjectInputStream(clientSocket.getInputStream());
 		System.out.println("[ClientHandler  " + clientHandlerId + "] Starte ClientHandler fuer: "
 				+ clientSocket.getInetAddress() + ":->" + clientSocket.getPort());
+                logger.writeMessage("[ClientHandler " + clientHandlerId + "] Starte ClientHandler fuer: " + clientSocket.getInetAddress() + ":->" + clientSocket.getPort(), 2 );
 		socketAddress = clientSocket.getRemoteSocketAddress();
 		System.out.println("[ClientHandler" + clientHandlerId + "] Verbindung zu " + socketAddress + " hergestellt");
-		oos.flush();
+                oos.flush();
+                logger.writeMessage("[ClientHandler" + clientHandlerId + "] Verbindung zu " + socketAddress + " hergestellt", 2 );
+
 	}
 
 	private Object empfangeVomClient() {
@@ -201,8 +225,9 @@ public class YoolooClientHandler extends Thread {
 
 	private void registriereSpielerInSession(YoolooSpieler meinSpieler) {
 		System.out.
-                                println("[ClientHandler" + clientHandlerId + "] registriereSpielerInSession " + meinSpieler.getName());
+                                println("[ClientHandler" + clientHandlerId + "] registriere Spieler In Session " + meinSpieler.getName());
 		session.getAktuellesSpiel().spielerRegistrieren(meinSpieler);
+                logger.writeMessage("ClientHandler" + clientHandlerId + "] registriere Spieler In Session " + meinSpieler.getName(),2);
 	}
 
 	/**
@@ -219,6 +244,8 @@ public class YoolooClientHandler extends Thread {
 		System.out.println("[ClientHandler" + clientHandlerId + "] spiele Stich Nr: " + stichNummer
 				+ " KarteKarte empfangen: " + empfangeneKarte.toString());
 		session.spieleKarteAus(clientHandlerId, stichNummer, empfangeneKarte);
+                logger.writeMessage("[ClientHandler" + clientHandlerId + "] spiele Stich Nr: " + stichNummer
+				+ " KarteKarte empfangen: " + empfangeneKarte.toString(), 2);
 		// ausgabeSpielplan(); // Fuer Debuginformationen sinnvoll
 		while (aktuellerStich == null) {
 			try {
@@ -226,6 +253,7 @@ public class YoolooClientHandler extends Thread {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+                                logger.writeMessage("[ClientHandler" + clientHandlerId + "] warte " + delay + " ms ", 1 );
 			}
 			aktuellerStich = session.stichFuerRundeAuswerten(stichNummer);
 		}
