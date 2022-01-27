@@ -32,16 +32,22 @@ public class YoolooSpieler implements Serializable {
             //    System.out.println(card);
             Scanner sc = new Scanner(System.in);
             // Karten mischen?
-            int sortAlgo;
-            do{
-                System.out.println("++++++++++++++++++++");
-                System.out.println("+   1.  Random     +");
-                System.out.println("+   2.  select     +");
-                System.out.println("+   3.  last5high  +");
-                System.out.println("+   4.  all_10     +");
-                System.out.println("++++++++++++++++++++");
-                sortAlgo = sc.nextInt();//().charAt(0);
-            } while(sortAlgo < 0 && sortAlgo >= 4);
+            int sortAlgo = 0;
+                System.out.println("\n++ Strategie wählen ++");
+                System.out.println("++++++++++++++++++++++");
+                System.out.println("+   1.  Random       +   --- Mische das gesamte Set");
+                System.out.println("+   2.  select       +   --- Wähle jede Position selbst");
+                System.out.println("+   3.  1-5|6-10     +   --- Gemischt: 1-5 und 6-10");
+                System.out.println("+   4.  1-3|4-6|7-10 +   --- Gemischt: 1-3, 4-6 und 7-10");
+                System.out.println("++++++++++++++++++++++");
+                
+                // try-catch: Sicherstellen, dass Zahl eingegeben wird
+                try{
+                    sortAlgo = sc.nextInt();//().charAt(0);
+                } catch(java.util.InputMismatchException e) {
+                    //sortAlgo = 0;
+                    System.err.println("Bitte eine Zahl angeben");
+                }
             
             switch (sortAlgo) {
                 case 1:
@@ -57,7 +63,7 @@ public class YoolooSpieler implements Serializable {
                     aktuelleSortierung = sorting(4);
                     break;
                 default:
-                    System.out.println("Diese Option steht nicht zur Verfügung...");
+                    System.err.println("Diese Option steht nicht zur Verfügung...");
                     sortierungFestlegen();
                     break;
             }
@@ -71,6 +77,8 @@ public class YoolooSpieler implements Serializable {
             Scanner sc = new Scanner(System.in);
             
             switch(choise){
+                
+                // case 1: Mische das gesamte Set
                 case 1:
                     for (int i = 0; i < neueSortierung.length; i++) {
                         int neuerIndex = (int) (Math.random() * neueSortierung.length);
@@ -80,6 +88,8 @@ public class YoolooSpieler implements Serializable {
                         neueSortierung[neuerIndex] = aktuelleSortierung[i];
                     }
                     break;
+                    
+                // case 2: Client legt Sortierung fest
                 case 2:   
                     for(int i =  0; i < neueSortierung.length; i++){
                         System.out.println("\n\nPosition für Karte\n ->\t" + aktuelleSortierung[i]);
@@ -103,38 +113,40 @@ public class YoolooSpieler implements Serializable {
                         }
                     }
                     break;
+                    
+                // case 3: Mische die Karten 1-5 und die Karten 6-10 
                 case 3:
                     for (int i = 0; i < neueSortierung.length; i++) {       // neuerIndex = Pos in neueSortierung // i = Kartenwert
                         System.out.println("Karte zum einfügen: " + aktuelleSortierung[i]);
                         int neuerIndex = (int) (Math.random() * 5);
-                        
-                        // Random sort of first 5 cards (1-5)
-                        if(i < 5){
-                            while(neueSortierung[neuerIndex] != null){
-                                neuerIndex = (int) (Math.random() * 5);
-                            }
-                        } 
-                        // Random sort of last 5 cards (6-10)
-                        else 
-                        {
-                            neuerIndex += 5;
-                            while(neueSortierung[neuerIndex] != null){
-                                neuerIndex = ((int) (Math.random() * 5));
+                        do{
+                            neuerIndex = (int) (Math.random() * 5);
+                            if(i >= 5)
                                 neuerIndex += 5;
-                            }
-                        }
+                        }while (neueSortierung[neuerIndex] != null);
                         neueSortierung[neuerIndex] = aktuelleSortierung[i];
                     }
                     break;
+                    
+                // case 4: Mische die Karten 1-3, 4-6 und 7-10
                 case 4:
                     for (int i = 0; i < neueSortierung.length; i++){
-                       /* if(i < 3){  //
-                        }
-                        else if(i < 6){
+                        int neuerIndex ;
+                        if(i < 6){
+                            do{
+                                neuerIndex = (int) (Math.random() * 3);
+                                if(i >= 3)
+                                    neuerIndex += 3;
+                            }while (neueSortierung[neuerIndex] != null);
                         }
                         else{
-                        }*/
-                       neueSortierung[i] = aktuelleSortierung[9];
+                            do{
+                                neuerIndex = ((int) (Math.random() * 4));
+                                neuerIndex += 6;
+                            }while (neueSortierung[neuerIndex] != null);
+                        }
+                        neueSortierung[neuerIndex] = aktuelleSortierung[i];
+                       //neueSortierung[i] = aktuelleSortierung[9]; //cheating
                     }
                     
             
