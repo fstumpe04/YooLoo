@@ -11,8 +11,8 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Akin
+ * @version v1.00
  */
 
 public class YoolooLogger {
@@ -21,12 +21,26 @@ public class YoolooLogger {
     setupLogger();
     }
     
+    /**
+     * Import der java.util.logging Klasse
+     * 
+     * Erstellen einer neues Loggers
+     * es wird die Methode setupLogger verwendet um den LogManager am Anfang zu resetten
+     * Alle Level werden zum schreiben in die Log Datei freigegeben mit dem Befehl Level.ALL
+     * 
+     * Der Logger zieht sich über den ConsoleHandler einträge aus der Konsole
+     * 
+     * @throws IOException e 
+     * Kann mit einem try/catch dem Logging hinzugefügt werden
+     * 
+     * @see weitere Beschreibung in den Inline Kommentaren
+     */
     public static final Logger logger = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
     public static void setupLogger() {
         LogManager.getLogManager().reset();
         logger.setLevel(Level.ALL);
         
-        //Console Handler erstellen
+        //ConsoleHandler erstellen
         ConsoleHandler ch = new ConsoleHandler();
         ch.setLevel(Level.SEVERE);
         logger.addHandler(ch);
@@ -41,6 +55,22 @@ public class YoolooLogger {
         }
     }
     
+    /**
+     * Im Enumerator werden die Verschiedenen Level für die Outputs festgelegt
+     * 
+     * OFF,
+     * SEVERE = 0
+     * WARNING = 1
+     * INFO = 2
+     * CONFIG = 3
+     * FINE = 4
+     * FINER = 5
+     * FINEST = 6
+     * ALL
+     * 
+     * OFF und ALL werden nicht betrachtet
+     * 
+     */
     
     //Verschiedene Level zum Loggen der Nachrichten
     public enum MessageLevel{
@@ -56,7 +86,16 @@ public class YoolooLogger {
         */
         }
     
-    //
+    /**
+     * Methode legt die Ausgabe des Loggers in die Logging Datei fest
+     * dem Logger wird mit String infoMessage ein Output mitgegeben.
+     * mit int levelType setzt man den Level des Outputs fest der zu dem Logging gesetzt wird
+     * 
+     * @param levelType 
+     * In dieser Methode wird festgelegt bei welchem case, welches Level in den Log mitgegeben wird.
+     * 
+     * 
+     */
     public void writeMessage(String infoMessage,int levelType) {
         
         //Arten des Logs
@@ -80,6 +119,8 @@ public class YoolooLogger {
         }
     }
 }
+
+// Beispiel Sektion
 
 // public static YoolooLogger logger;
 // logger.writeMessage("Client Verbindung gescheitert", 0);
