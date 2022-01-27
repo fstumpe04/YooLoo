@@ -128,7 +128,6 @@ public class YoolooClientHandler extends Thread {
                                                         }                                                            
 							System.out.println("[ClientHandler" + clientHandlerId + "] Karte empfangen:" + neueKarte);
 							YoolooStich currentstich = spieleKarte(stichNummer, neueKarte);
-                                                        logger.writeMessage("[ClientHandler" + clientHandlerId + "] Karte empfangen:" + neueKarte, 2 );
 							// Punkte fuer gespielten Stich ermitteln
 							if (currentstich.getSpielerNummer() == clientHandlerId) {
 								meinSpieler.erhaeltPunkte(stichNummer + 1);
@@ -253,7 +252,6 @@ public class YoolooClientHandler extends Thread {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-                                logger.writeMessage("[ClientHandler" + clientHandlerId + "] warte " + delay + " ms ", 1 );
 			}
 			aktuellerStich = session.stichFuerRundeAuswerten(stichNummer);
 		}
