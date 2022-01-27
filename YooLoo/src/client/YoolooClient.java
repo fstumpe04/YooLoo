@@ -54,7 +54,7 @@ public class YoolooClient {
                     System.out.println("Bitte Namen eingeben.");
                     if(scanner.hasNextLine()){
                         name = scanner.nextLine();
-                        scanner.close();
+                        //scanner.close();
                         
                         
 
@@ -98,25 +98,46 @@ public class YoolooClient {
                                                 
 						newLogin = eingabeSpielerDatenFuerLogin(); 
 						newLogin = new LoginMessage(spielerName);
+                                                
 					}
 					// Client meldet den Spieler an den Server
 					oos.writeObject(newLogin);
+                                        
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
-					empfangeSpieler();
-                                        System.out.println("Fordere Kommando an");
-                                        //kommandoMessage = empfangeKommando();
-                                        System.out.println("Kommando erhalten!");
-                                        if(kommandoMessage.getServerMessageResult()== messages.ServerMessage.ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK){
-                                                System.out.println("Im IF");
-                                                newLogin = neuenNamenVergeben(); 
+                                        kommandoMessage = empfangeKommando();
+                                        while(kommandoMessage.getServerMessageResult()==messages.ServerMessage.ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK){
+                                        
+                                        System.out.println(kommandoMessage);
+                                        
+                                                System.err.println("Im IF kommando stimmt"+newLogin.getSpielerName());
+                                                Scanner scanner = new Scanner(System.in);
+                                                System.out.println("Bitte anderen Namen eingeben!");
+                                                spielerName = scanner.nextLine();
+                                                //newLogin = eingabeSpielerDatenFuerLogin();         
+                                                System.err.println("nach Scanner");
 						newLogin = new LoginMessage(spielerName);
+                                                System.err.println(newLogin.getSpielerName());
                                                 oos.writeObject(newLogin);
                                                 System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
-                                                empfangeSpieler();
-                                        }
-                                        System.out.println("Nach If");
+                                                kommandoMessage = empfangeKommando();
+                                        
+                                        };
+					empfangeSpieler();
+                                        
+                                        
+                                        
+//                                        if(kommandoMessage.getServerMessageResult()== messages.ServerMessage.ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK){
+//                                                System.out.println("Im IF");
+//                                                newLogin = neuenNamenVergeben(); 
+//						newLogin = new LoginMessage(spielerName);
+//                                                oos.writeObject(newLogin);
+//                                                System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
+//							+ " an server gesendet warte auf Spielerdaten");
+//                                                empfangeSpieler();
+//                                        }
+                                        
 					// ausgabeKartenSet();
 					break;
 				case SERVERMESSAGE_SORT_CARD_SET:

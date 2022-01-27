@@ -8,6 +8,7 @@ import server.YoolooServer;
 import server.YoolooServer.GameMode;
 
 public class StarterServer {
+    public static String[] onlinePlayer = new String[]{"","","","","","","",""};
 
 	public static void main(String[] args) {
 		int listeningPort = 44137; //defaul 44137

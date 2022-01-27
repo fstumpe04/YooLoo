@@ -102,11 +102,16 @@ public class YoolooClientHandler extends Thread {
                                                 Boolean nameDoubled = checkIfAlreadyConnected(playerName);
                                                 if(nameDoubled){
                                                     System.out.println("Name: "+playerName+" bereits vergeben");
-                                                    sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN, ClientState.CLIENTSTATE_LOGIN, null);
+                                                    System.out.println("Bitte neue Session starten!");
+                                                    sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN,ClientState.CLIENTSTATE_LOGIN,ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK);
+                                                    
+                                                    
                                                 }else{
                                                     meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert);
                                                     meinSpieler.setClientHandlerId(clientHandlerId);
                                                     registriereSpielerInSession(meinSpieler);
+                                                    //sendeKommando(ServerMessageType.SERVERMESSAGE_SENDLOGIN,ClientState.CLIENTSTATE_LOGIN,ServerMessageResult.SERVER_MESSAGE_RESULT_OK);
+                                                    sendeKommando(ServerMessageType.SERVERMESSAGE_SORT_CARD_SET, ClientState.CLIENTSTATE_SORT_CARDS,null);
                                                     oos.writeObject(meinSpieler);
                                                     sendeKommando(ServerMessageType.SERVERMESSAGE_SORT_CARD_SET, ClientState.CLIENTSTATE_SORT_CARDS,null);
                                                     this.state = ServerState.ServerState_PLAY_SESSION;
