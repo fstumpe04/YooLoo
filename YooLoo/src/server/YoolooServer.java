@@ -33,6 +33,9 @@ public class YoolooServer {
 
 	// private ArrayList<Thread> spielerThreads;
 	private ArrayList<YoolooClientHandler> clientHandlerList;
+        
+        private ArrayList<YoolooClientHandler> clientSpectatorHandlerList;
+
 
 	private ExecutorService spielerPool;
 
@@ -72,6 +75,8 @@ public class YoolooServer {
 				try {
 					client = serverSocket.accept();
 					YoolooClientHandler clientHandler = new YoolooClientHandler(this, client);
+                                        //if(clientHandler.isSpectator){}
+                                        
 					clientHandlerList.add(clientHandler);
 					System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + clientHandlerList.size());
 				} catch (IOException e) {

@@ -15,6 +15,7 @@ import common.LoginMessage;
 import common.YoolooKartenspiel;
 import common.YoolooSpieler;
 import common.YoolooStich;
+import java.util.Scanner;
 import messages.ClientMessage;
 import messages.ClientMessage.ClientMessageType;
 import messages.ServerMessage;
@@ -33,6 +34,9 @@ public class YoolooClient {
 	private LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
+        
+        private boolean spectator;
+        private Scanner sc = new Scanner(System.in);
 
 	public YoolooClient() {
 		super();
@@ -51,12 +55,18 @@ public class YoolooClient {
 	public void startClient() {
 
 		try {
+                        decideToPlay();
 			clientState = ClientState.CLIENTSTATE_CONNECT;
 			verbindeZumServer();
+                        System.out.println("HALLO NACH DER SERVERVERBINDUNG");
+                        
+                        setSpectatorState();
+                        System.out.println("HALLO NACH DER SPECTATORSTATEAENDERUNG");
 
 			while (clientState != ClientState.CLIENTSTATE_DISCONNECTED && ois != null && oos != null) {
                             
 				// 1. Schritt Kommado empfangen                              
+                                System.out.println("EMPFANGE KOMMANDO!!!!!");
 				ServerMessage kommandoMessage = empfangeKommando();
 				System.out.println("[id-x]ClientStatus: " + clientState + "] " + kommandoMessage.toString());
                                 
@@ -77,7 +87,11 @@ public class YoolooClient {
 						// Spielernames, GameModes, ...)
 						newLogin = eingabeSpielerDatenFuerLogin(); //Dummy aufruf
 						newLogin = new LoginMessage(spielerName);
-					}
+                                                
+                                                
+					}else if(newLogin == null || clientState == ClientState.CLIENT_LOGIN_AS_SPECTATOR){
+                                            newLogin = new LoginMessage(spectator);
+                                        }
 					// Client meldet den Spieler an den Server
 					oos.writeObject(newLogin);
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
@@ -234,7 +248,52 @@ public class YoolooClient {
 		CLIENTSTATE_REGISTER, // t.b.d.
 		CLIENTSTATE_PLAY_SINGLE_GAME, // Spielmodus einfaches Spiel
 		CLIENTSTATE_DISCONNECT, // Verbindung soll getrennt werden
-		CLIENTSTATE_DISCONNECTED // Vebindung wurde getrennt
+		CLIENTSTATE_DISCONNECTED, // Vebindung wurde getrennt
+                CLIENT_LOGIN_AS_SPECTATOR
 	};
+
+    public boolean isSpectator() {
+        return spectator;
+    }
+
+    public void setSpectator(boolean spectator) {
+        this.spectator = spectator;
+    }
+    public void setSpectatorState(){
+        if(spectator){
+            clientState = ClientState.CLIENT_LOGIN_AS_SPECTATOR;
+        } 
+    }
+        
+    public void decideToPlay(){
+        boolean hasDecided = false;
+        int playerInput;
+        
+        System.out.println("Eingabeaufforderung:");
+        System.out.println("1. Spieler");
+        System.out.println("0. Spectator");
+        
+        
+   while (!hasDecided){
+       playerInput = sc.nextInt();
+        switch(playerInput){
+            case 0: 
+                System.out.println("GameMode: Spectator");
+                setSpectator(true);
+                hasDecided=true;
+                break;
+            case 1: 
+                System.out.println("GameMode: Player");
+                setSpectator(false);
+                hasDecided=true;
+                break;
+            default:
+                System.out.println("### Fehlerhafte Eingabe ###");
+        }
+   }
+        
+        
+        
+    }
 
 }

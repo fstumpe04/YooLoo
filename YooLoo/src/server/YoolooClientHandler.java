@@ -79,6 +79,7 @@ public class YoolooClientHandler extends Thread {
 				// Empfange Spieler als Antwort vom Client
 				antwortObject = empfangeVomClient();
 				if (antwortObject instanceof ClientMessage) {
+                                    //recieve Client information ----> spectator
 					ClientMessage message = (ClientMessage) antwortObject;
 					System.out.println("[ClientHandler" + clientHandlerId + "] Nachricht Vom Client: " + message);
 				}

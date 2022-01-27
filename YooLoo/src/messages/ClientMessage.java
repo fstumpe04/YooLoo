@@ -41,7 +41,8 @@ public class ClientMessage implements Serializable {
 
 	public enum ClientMessageType {
 		ClientMessage_OK, //
-		ClientMessage_NOT_OK
+		ClientMessage_NOT_OK,
+                ClientMessage_JUST_WATCHING //spectator-Type
 	};
 
 }
