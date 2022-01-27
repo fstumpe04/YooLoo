@@ -32,11 +32,7 @@ public class LoginMessage implements Serializable {
 		this.spielerName = spielerName;
 		this.gameMode = GameMode.GAMEMODE_SINGLE_GAME;
 	}
-        public LoginMessage(Boolean spectator){
-            super();
-            this.spectator=spectator;
-            //###################################################
-        }
+ 
 
 	public String getSpielerName() {
 		return spielerName;

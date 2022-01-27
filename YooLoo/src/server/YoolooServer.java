@@ -37,10 +37,12 @@ public class YoolooServer {
 	// private ArrayList<Thread> spielerThreads;
 	private ArrayList<YoolooClientHandler> clientHandlerList;
         
-        private ArrayList<YoolooClientHandler> clientSpectatorHandlerList;
+        
 
-
+        private int zuschauer = 0;
+        private int spieler = 0;
 	private ExecutorService spielerPool;
+        private boolean letzterClientStatus = false;// min 1, max Anzahl definierte Farben in Enum YoolooKartenSpiel.KartenFarbe)
 
 	/**
 	 * Serverseitig durch ClientHandler angebotenen SpielModi. Bedeutung der
@@ -74,46 +76,49 @@ public class YoolooServer {
 			while (serverAktiv) {
 				Socket client = null;
 
-				// Neue Spieler registrieren
-				try {
-					client = serverSocket.accept();
-                                        
-                         
-                                        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-                                        BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
-                                        
-					YoolooClientHandler clientHandler = new YoolooClientHandler(this, client);
-                                        //if(clientHandler.){}
-                                        
-                                        
-                                        
-                                        
-                                        
-					clientHandlerList.add(clientHandler);
-					System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + clientHandlerList.size());
+                                try {
+					client = serverSocket.accept();				    
+					PrintWriter out =
+				            new PrintWriter(client.getOutputStream(), true);
+				        BufferedReader in = new BufferedReader(
+				            new InputStreamReader(client.getInputStream()));
+				    String inputLine, outputLine;
+				    ZuschauerProtokoll kkp = new ZuschauerProtokoll();
+				    outputLine = kkp.processInput(null);
+				    out.println(outputLine);
+			        while ((inputLine = in.readLine()) != null) {
+			            outputLine = kkp.processInput(inputLine);
+			            out.println(outputLine);
+			            if (outputLine.equals("Zuschauer")) {
+			            	this.zuschauer = this.zuschauer + 1;
+			            	this.letzterClientStatus = true;
+			            	System.out.println("[YoolooServer] Anzahl verbundene Zuschauer: " + this.zuschauer);
+			            	break;
+			            }
+			            if (outputLine.equals("Spieler")) {
+			            	this.spieler = this.spieler + 1;
+			            	this.letzterClientStatus = false;
+			            	System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + this.spieler);
+			            	break;
+			            }
+			      
+			                
+			        }
+			        if (this.letzterClientStatus == true) {
+			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, true);
+			        	clientHandlerList.add(clientHandler);
+			        }
+			        else  {
+			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, false);
+			        	clientHandlerList.add(clientHandler);
+			        }
+					
 				} catch (IOException e) {
 					System.out.println("Client Verbindung gescheitert");
 					e.printStackTrace();
 				}
-
-				// Neue Session starten wenn ausreichend Spieler verbunden sind!
-				if (clientHandlerList.size() >= Math.min(spielerProRunde,
-						YoolooKartenspiel.Kartenfarbe.values().length)) {
-					// Init Session
-					YoolooSession yoolooSession = new YoolooSession(clientHandlerList.size(), serverGameMode);
-
-					// Starte pro Client einen ClientHandlerTread
-					for (int i = 0; i < clientHandlerList.size(); i++) {
-						YoolooClientHandler ch = clientHandlerList.get(i);
-						ch.setHandlerID(i);
-						ch.joinSession(yoolooSession);
-						spielerPool.execute(ch); // Start der ClientHandlerThread - Aufruf der Methode run()
-					}
-
-					// nuechste Runde eroeffnen
-					clientHandlerList = new ArrayList<YoolooClientHandler>();
-				}
+				// Neue Spieler registrieren
+				
 			}
 		} catch (IOException e1) {
 			System.out.println("ServerSocket nicht gebunden");

@@ -64,7 +64,7 @@ public class YoolooClient {
 	public void startClient() {
 
 		try {
-                        decideToPlay();
+                        
 			clientState = ClientState.CLIENTSTATE_CONNECT;
 			verbindeZumServer();
                         System.out.println("HALLO NACH DER SERVERVERBINDUNG");
@@ -95,12 +95,8 @@ public class YoolooClient {
 						// TODO Klasse LoginMessage erweiteren um Interaktives ermitteln des
 						// Spielernames, GameModes, ...)
 						newLogin = eingabeSpielerDatenFuerLogin(); //Dummy aufruf
-						newLogin = new LoginMessage(spielerName);
-                                                
-                                                
-					}else if(newLogin == null || clientState == ClientState.CLIENT_LOGIN_AS_SPECTATOR){
-                                            newLogin = new LoginMessage(spectator);
-                                        }
+						newLogin = new LoginMessage(spielerName);                                                   
+					}
 					// Client meldet den Spieler an den Server
 					oos.writeObject(newLogin);
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
@@ -295,37 +291,5 @@ public class YoolooClient {
         if(spectator){
             clientState = ClientState.CLIENT_LOGIN_AS_SPECTATOR;
         } 
-    }
-        
-    public void decideToPlay(){
-        boolean hasDecided = false;
-        int playerInput;
-        
-        System.out.println("Eingabeaufforderung:");
-        System.out.println("1. Spieler");
-        System.out.println("0. Spectator");
-        
-        
-   while (!hasDecided){
-       playerInput = sc.nextInt();
-        switch(playerInput){
-            case 0: 
-                System.out.println("GameMode: Spectator");
-                setSpectator(true);
-                hasDecided=true;
-                break;
-            case 1: 
-                System.out.println("GameMode: Player");
-                setSpectator(false);
-                hasDecided=true;
-                break;
-            default:
-                System.out.println("### Fehlerhafte Eingabe ###");
-        }
-   }
-        
-        
-        
-    }
-
+    } 
 }

@@ -36,11 +36,19 @@ public class YoolooClientHandler extends Thread {
 	private ObjectOutputStream oos = null;
 	private ObjectInputStream ois = null;
 
+        private boolean zuschauer = false;
 	private ServerState state;
 	private YoolooSession session;
 	private YoolooSpieler meinSpieler = null;
 	private int clientHandlerId;
 
+        public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket, boolean zuschauer) {
+		this.zuschauer = zuschauer;
+		this.myServer = yoolooServer;
+		myServer.toString();
+		this.clientSocket = clientSocket;
+		this.state = ServerState.ServerState_NULL;
+	}
 	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket) {
 		this.myServer = yoolooServer;
 		myServer.toString();
