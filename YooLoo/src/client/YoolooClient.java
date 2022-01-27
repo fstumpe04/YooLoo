@@ -15,6 +15,9 @@ import common.LoginMessage;
 import common.YoolooKartenspiel;
 import common.YoolooSpieler;
 import common.YoolooStich;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Scanner;
 import messages.ClientMessage;
 import messages.ClientMessage.ClientMessageType;
@@ -27,6 +30,8 @@ public class YoolooClient {
 	private Socket serverSocket = null;
 	private ObjectInputStream ois = null;
 	private ObjectOutputStream oos = null;
+        
+        
 
 	private ClientState clientState = ClientState.CLIENTSTATE_NULL;
 
@@ -34,6 +39,10 @@ public class YoolooClient {
 	private LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
+        
+        
+        private PrintWriter out = null;
+        private BufferedReader in = null; 
         
         private boolean spectator;
         private Scanner sc = new Scanner(System.in);
@@ -145,7 +154,28 @@ public class YoolooClient {
 		while (serverSocket == null) {
 			try {
 				serverSocket = new Socket(serverHostname, serverPort);
-			} catch (ConnectException e) {
+                                out = new PrintWriter(serverSocket.getOutputStream());
+                                in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+                                
+                                
+                                BufferedReader stdIn =
+                                    new BufferedReader(new InputStreamReader(System.in));
+                                String fromServer;
+                                String fromClient;
+                                
+                                while ((fromServer = in.readLine()) != null) {
+                                System.out.println("Server: " + fromServer);
+                                if (fromServer.equals("Bye."))
+                                    break;
+
+                                fromClient = stdIn.readLine();
+                                    if (fromClient != null) {
+                                        System.out.println("Client: " + fromClient);
+                                        out.println(fromClient);
+                                    }
+                                }
+                                
+                            } catch (ConnectException e) {
 				System.out.println("Server antwortet nicht - ggfs. neu starten");
 				try {
 					Thread.sleep(1000);
@@ -155,6 +185,8 @@ public class YoolooClient {
 		}
 		System.out.println("[Client] Serversocket eingerichtet: " + serverSocket.toString());
 		// Kommunikationskanuele einrichten
+                
+                
 		ois = new ObjectInputStream(serverSocket.getInputStream());
 		oos = new ObjectOutputStream(serverSocket.getOutputStream());
 	}

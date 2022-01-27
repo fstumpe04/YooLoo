@@ -14,6 +14,7 @@ public class LoginMessage implements Serializable {
 
 	private String spielerName;
 	private GameMode gameMode;
+        private boolean spectator;
 
 	public LoginMessage(String name, GameMode play_mode) {
 		super();
@@ -33,6 +34,7 @@ public class LoginMessage implements Serializable {
 	}
         public LoginMessage(Boolean spectator){
             super();
+            this.spectator=spectator;
             //###################################################
         }
 

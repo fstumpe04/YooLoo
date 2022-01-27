@@ -12,6 +12,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import common.YoolooKartenspiel;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class YoolooServer {
 
@@ -74,8 +77,18 @@ public class YoolooServer {
 				// Neue Spieler registrieren
 				try {
 					client = serverSocket.accept();
+                                        
+                         
+                                        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                                        BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+                                        
 					YoolooClientHandler clientHandler = new YoolooClientHandler(this, client);
-                                        //if(clientHandler.isSpectator){}
+                                        //if(clientHandler.){}
+                                        
+                                        
+                                        
+                                        
                                         
 					clientHandlerList.add(clientHandler);
 					System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + clientHandlerList.size());
