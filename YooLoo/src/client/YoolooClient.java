@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 import common.LoginMessage;
 import common.YoolooKartenspiel;
@@ -29,8 +30,9 @@ public class YoolooClient {
 
 	private ClientState clientState = ClientState.CLIENTSTATE_NULL;
 
-	private String spielerName = "Name" + (System.currentTimeMillis() + "").substring(6);
-	private LoginMessage newLogin = null;
+	private String spielerName = "";
+        
+	public static LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
 
@@ -43,12 +45,33 @@ public class YoolooClient {
 		this.serverPort = serverPort;
 		clientState = ClientState.CLIENTSTATE_NULL;
 	}
+        
+        public String setSpielername(){
+                String name="";
+                
+                
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Bitte Namen eingeben.");
+                    if(scanner.hasNextLine()){
+                        name = scanner.nextLine();
+                        //scanner.close();
+                        
+                        
+
+                    }
+                
+                return name;
+                
+        }
 
 	/**
 	 * Client arbeitet statusorientiert als Kommandoempfuenger in einer Schleife.
 	 * Diese terminiert wenn das Spiel oder die Verbindung beendet wird.
 	 */
 	public void startClient() {
+                
+            
+                
 
 		try {
 			clientState = ClientState.CLIENTSTATE_CONNECT;
@@ -64,6 +87,7 @@ public class YoolooClient {
 					clientState = newClientState;
 				}
 				// 3. Schritt Kommandospezifisch reagieren
+                                
 				switch (kommandoMessage.getServerMessageType()) {
 				case SERVERMESSAGE_SENDLOGIN:
 					// Server fordert Useridentifikation an
@@ -71,15 +95,53 @@ public class YoolooClient {
 					if (newLogin == null || clientState == ClientState.CLIENTSTATE_LOGIN) {
 						// TODO Klasse LoginMessage erweiteren um Interaktives ermitteln des
 						// Spielernames, GameModes, ...)
-						newLogin = eingabeSpielerDatenFuerLogin(); //Dummy aufruf
+                                                
+						newLogin = eingabeSpielerDatenFuerLogin(); 
 						newLogin = new LoginMessage(spielerName);
+                                                
 					}
 					// Client meldet den Spieler an den Server
 					oos.writeObject(newLogin);
+                                        
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
-                                        empfangeSpieler();
-					// ausgabeKartenSet();
+
+                                        kommandoMessage = empfangeKommando();
+                                        while(kommandoMessage.getServerMessageResult()==messages.ServerMessage.ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK){
+                                        
+                                        System.out.println(kommandoMessage);
+                                        
+                                                System.err.println("Im IF kommando stimmt"+newLogin.getSpielerName());
+                                                Scanner scanner = new Scanner(System.in);
+                                                System.out.println("Bitte anderen Namen eingeben!");
+                                                spielerName = scanner.nextLine();
+                                                //newLogin = eingabeSpielerDatenFuerLogin();         
+                                                System.err.println("nach Scanner");
+						newLogin = new LoginMessage(spielerName);
+                                                System.err.println(newLogin.getSpielerName());
+                                                oos.writeObject(newLogin);
+                                                System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
+							+ " an server gesendet warte auf Spielerdaten");
+                                                kommandoMessage = empfangeKommando();
+                                        
+                                        };
+					empfangeSpieler();
+                                        
+                                        
+                                        
+//                                        if(kommandoMessage.getServerMessageResult()== messages.ServerMessage.ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK){
+//                                                System.out.println("Im IF");
+//                                                newLogin = neuenNamenVergeben(); 
+//						newLogin = new LoginMessage(spielerName);
+//                                                oos.writeObject(newLogin);
+//                                                System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
+//							+ " an server gesendet warte auf Spielerdaten");
+//                                                empfangeSpieler();
+//                                        }
+                                        
+
+
+					
 					break;
 				case SERVERMESSAGE_SORT_CARD_SET:
 					// sortieren Karten
@@ -204,9 +266,14 @@ public class YoolooClient {
 		}
 		return null;
 	}
+        
+        private LoginMessage neuenNamenVergeben(){
+                spielerName = wrongName();
+                return null;
+        }
 
 	private LoginMessage eingabeSpielerDatenFuerLogin() {
-		// TODO Spielername, GameMode und ggfs mehr ermitteln
+		spielerName = setSpielername();
 		return null;
 	}
 
@@ -220,6 +287,17 @@ public class YoolooClient {
 		}
 
 	}
+        
+        public static String wrongName(){
+            System.out.println("Spieler bereits verbunden!");
+            System.out.println("Bitte anderen Namen wählen!");
+            Scanner scanner = new Scanner(System.in);
+            String name="";
+            if(scanner.hasNextLine()){
+                name=scanner.nextLine();
+            }
+            return name;
+        }
 
 	public enum ClientState {
 		CLIENTSTATE_NULL, // Status nicht definiert
