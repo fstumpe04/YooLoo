@@ -16,6 +16,7 @@ public class YoolooSession {
 	private YoolooKarte[][] spielplan;
 	private YoolooKartenspiel aktuellesSpiel;
 	private YoolooStich[] ausgewerteteStiche;
+        public YoolooLogger logger;
 
 	public YoolooSession(int anzahlSpielerInRunde) {
 		super();
@@ -53,6 +54,7 @@ public class YoolooSession {
 				neuerStich.setSpielerNummer(aktuellesSpiel.berechneGewinnerIndex(karten));
 				ausgewerteteStiche[stichNummer] = neuerStich;
 				System.out.println("Stich ausgewertet:" + neuerStich.toString());
+                                logger.writeMessage("Stich ausgewertet:" + neuerStich.toString(), 2);
 			}
 		}
 		return ausgewerteteStiche[stichNummer];
