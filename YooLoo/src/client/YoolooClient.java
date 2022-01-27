@@ -30,9 +30,9 @@ public class YoolooClient {
 
 	private ClientState clientState = ClientState.CLIENTSTATE_NULL;
 
-	private String spielerName = setSpielername();
+	private String spielerName = "";
         
-	private LoginMessage newLogin = null;
+	public static LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
 
@@ -87,6 +87,7 @@ public class YoolooClient {
 					clientState = newClientState;
 				}
 				// 3. Schritt Kommandospezifisch reagieren
+                                
 				switch (kommandoMessage.getServerMessageType()) {
 				case SERVERMESSAGE_SENDLOGIN:
 					// Server fordert Useridentifikation an
@@ -95,7 +96,7 @@ public class YoolooClient {
 						// TODO Klasse LoginMessage erweiteren um Interaktives ermitteln des
 						// Spielernames, GameModes, ...)
                                                 
-						newLogin = eingabeSpielerDatenFuerLogin(); //Dummy aufruf
+						newLogin = eingabeSpielerDatenFuerLogin(); 
 						newLogin = new LoginMessage(spielerName);
 					}
 					// Client meldet den Spieler an den Server
@@ -103,6 +104,19 @@ public class YoolooClient {
 					System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
 							+ " an server gesendet warte auf Spielerdaten");
 					empfangeSpieler();
+                                        System.out.println("Fordere Kommando an");
+                                        //kommandoMessage = empfangeKommando();
+                                        System.out.println("Kommando erhalten!");
+                                        if(kommandoMessage.getServerMessageResult()== messages.ServerMessage.ServerMessageResult.SERVER_MESSAGE_RESULT_NOT_OK){
+                                                System.out.println("Im IF");
+                                                newLogin = neuenNamenVergeben(); 
+						newLogin = new LoginMessage(spielerName);
+                                                oos.writeObject(newLogin);
+                                                System.out.println("[id-x]ClientStatus: " + clientState + "] : LoginMessage fuer  " + spielerName
+							+ " an server gesendet warte auf Spielerdaten");
+                                                empfangeSpieler();
+                                        }
+                                        System.out.println("Nach If");
 					// ausgabeKartenSet();
 					break;
 				case SERVERMESSAGE_SORT_CARD_SET:
@@ -228,9 +242,14 @@ public class YoolooClient {
 		}
 		return null;
 	}
+        
+        private LoginMessage neuenNamenVergeben(){
+                spielerName = wrongName();
+                return null;
+        }
 
 	private LoginMessage eingabeSpielerDatenFuerLogin() {
-		// TODO Spielername, GameMode und ggfs mehr ermitteln
+		spielerName = setSpielername();
 		return null;
 	}
 
@@ -244,6 +263,17 @@ public class YoolooClient {
 		}
 
 	}
+        
+        public static String wrongName(){
+            System.out.println("Spieler bereits verbunden!");
+            System.out.println("Bitte anderen Namen wählen!");
+            Scanner scanner = new Scanner(System.in);
+            String name="";
+            if(scanner.hasNextLine()){
+                name=scanner.nextLine();
+            }
+            return name;
+        }
 
 	public enum ClientState {
 		CLIENTSTATE_NULL, // Status nicht definiert
