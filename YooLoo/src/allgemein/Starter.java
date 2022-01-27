@@ -18,7 +18,15 @@ public class Starter {
 		yooloo.spielerRegistrieren("Juergen");
 		yooloo.spielerRegistrieren("Reiner");
 		yooloo.spielerRegistrieren("Benedikt");
+		yooloo.spielerRegistrieren("Olaf");		
+                yooloo.spielerRegistrieren("Olaf");
 		yooloo.spielerRegistrieren("Olaf");
+		yooloo.spielerRegistrieren("Olaf");
+		yooloo.spielerRegistrieren("Olaf");		
+                yooloo.spielerRegistrieren("Olaf");
+
+		
+
 
 //		Sortieren der Karten
 		yooloo.spielerSortierungFestlegen();

@@ -106,17 +106,19 @@ public class YoolooClientHandler extends Thread {
 									ClientState.CLIENTSTATE_PLAY_SINGLE_GAME, null, stichNummer);
 							// Neue YoolooKarte in Session ausspielen und Stich abfragen
 							YoolooKarte neueKarte = (YoolooKarte) empfangeVomClient();
-                                                        // Änderung Florian: Vergleicht ob der aktuelle Spielplan die soeben übergeben Karte bereits endhält
+                                                        // Änderung Florian Modul: Regeleinhaltung
+                                                        // Vergleicht ob der aktuelle Spielplan die so eben übergebene Karte bereits enthält
                                                         YoolooKarte[][] aktuellerSpielplan = session.getSpielplan();                                                        
                                                         for (int i = 0; i < aktuellerSpielplan.length; i++) {
                                                                 for (int j = 0; j < aktuellerSpielplan[i].length; j++) {
                                                                         if (aktuellerSpielplan[i][j] == neueKarte){
                                                                                 System.out.println("[ClientHandler" + clientHandlerId + "] Karte bereits vorhanden:" + neueKarte);
+                                                                                System.out.println("Bitte wählen Sie eine andere Karte aus!");
                                                                                 stichNummer--;
                                                                                 continue;
                                                                         }
                                                                 }
-                                                        }                                                            
+                                                        }                     
 							System.out.println("[ClientHandler" + clientHandlerId + "] Karte empfangen:" + neueKarte);
 							YoolooStich currentstich = spieleKarte(stichNummer, neueKarte);
 							// Punkte fuer gespielten Stich ermitteln

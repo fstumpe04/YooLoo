@@ -18,12 +18,14 @@ public class YoolooSpieler implements Serializable {
 	private int clientHandlerId = -1;
 	private int punkte;
 	private YoolooKarte[] aktuelleSortierung;
+        private boolean isSpectator;
 
 	public YoolooSpieler(String name, int maxKartenWert) {
 		this.name = name;
 		this.punkte = 0;
 		this.spielfarbe = null;
 		this.aktuelleSortierung = new YoolooKarte[maxKartenWert];
+                this.isSpectator = false;
 	}
 
 	// Sortierung wird zufuellig ermittelt
