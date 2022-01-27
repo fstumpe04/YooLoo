@@ -1,6 +1,7 @@
 // History of Change
 // vernr    |date  | who | lineno | what
 //  V0.106  |200107| cic |    -   | add history of change
+//  V0.2    |220127| pas |    -   | add sortings for 'sortierungFestlegen()'
 
 package common;
 
@@ -26,12 +27,13 @@ public class YoolooSpieler implements Serializable {
 		this.aktuelleSortierung = new YoolooKarte[maxKartenWert];
 	}
 
-	// Sortierung wird zufuellig ermittelt
+       /**
+        * Client waehlt option zum Sortieren der Karten.
+        * @author Paskuda Lukas (überarbeitet)
+        * @see common.YoolooKarte[] sorting(int choise)
+        */
 	public void sortierungFestlegen() {
-            //for(YoolooKarte card : aktuelleSortierung)
-            //    System.out.println(card);
             Scanner sc = new Scanner(System.in);
-            // Karten mischen?
             int sortAlgo = 0;
                 System.out.println("\n++ Strategie wählen ++");
                 System.out.println("++++++++++++++++++++++");
@@ -41,11 +43,10 @@ public class YoolooSpieler implements Serializable {
                 System.out.println("+   4.  1-3|4-6|7-10 +   --- Gemischt: 1-3, 4-6 und 7-10");
                 System.out.println("++++++++++++++++++++++");
                 
-                // try-catch: Sicherstellen, dass Zahl eingegeben wird
+                // try-catch: Sicherstellen, dass Zahl (int) eingegeben wird
                 try{
-                    sortAlgo = sc.nextInt();//().charAt(0);
+                    sortAlgo = sc.nextInt();
                 } catch(java.util.InputMismatchException e) {
-                    //sortAlgo = 0;
                     System.err.println("Bitte eine Zahl angeben");
                 }
             
@@ -67,11 +68,25 @@ public class YoolooSpieler implements Serializable {
                     sortierungFestlegen();
                     break;
             }
-            for(YoolooKarte aus : getAktuelleSortierung()){
-                System.out.println(aus);
+            for(YoolooKarte karte : getAktuelleSortierung()){
+                System.out.println(karte);
             }
 	}
         
+	
+       /**
+        * Ueber die Eingabe in <b><i>"sortierungFestlegen()"</i></b> wird entsprechend der Eingabe ein Algorithmus zum Sortieren der Karten ausgefuehrt.
+        *
+        * <br><br>Es stehend diese Optionen zur Verfuegung:
+        *               <br><span style="margin-left:30px"><b>choise = 1:</b> Mische gesamtes Kartenset</span>
+        *               <br><span style="margin-left:30px"><b>choise = 2:</b> Client wählt position fuer jede Karte</span>
+        *               <br><span style="margin-left:30px"><b>choise = 3:</b> Mische die Positionen 1-5 und 6-10</span>
+        *               <br><span style="margin-left:30px"><b>choise = 4:</b> Mische die Positionen 1-3, 4-6 und 7-10</span>
+        *
+        * @author Paskuda Lukas
+        * @param choise switch Parameter fuer Auswahl des Sortieralgorithmus
+        * @return YoolooKarten[] neueSortierung
+        */
         public YoolooKarte[] sorting(int choise){
             YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
             Scanner sc = new Scanner(System.in);
@@ -106,7 +121,7 @@ public class YoolooSpieler implements Serializable {
 
                         }while (neuePos < 0 || neuePos > 10);
                         if(neueSortierung[neuePos] == null)
-                            neueSortierung[neuePos] = aktuelleSortierung[i];//aktuelleSortierung[i];
+                            neueSortierung[neuePos] = aktuelleSortierung[i];
                         else{
                             System.err.println("Position " + neuePos + " ist bereits belegt");
                             i--;
@@ -116,7 +131,7 @@ public class YoolooSpieler implements Serializable {
                     
                 // case 3: Mische die Karten 1-5 und die Karten 6-10 
                 case 3:
-                    for (int i = 0; i < neueSortierung.length; i++) {       // neuerIndex = Pos in neueSortierung // i = Kartenwert
+                    for (int i = 0; i < neueSortierung.length; i++) {
                         System.out.println("Karte zum einfügen: " + aktuelleSortierung[i]);
                         int neuerIndex = (int) (Math.random() * 5);
                         do{
@@ -149,7 +164,6 @@ public class YoolooSpieler implements Serializable {
                        //neueSortierung[i] = aktuelleSortierung[9]; //cheating
                     }
                     
-            
             }
             return neueSortierung;
         }
